@@ -48,6 +48,7 @@ int main(int argc, char **argv)
     graph.addEdge(3, 0);
     graph.addEdge(5, 6);
     graph.addEdge(8, 5);
+    graph.addEdge(4, 8);
 
     bridges.setDataStructure(&graph);
 
