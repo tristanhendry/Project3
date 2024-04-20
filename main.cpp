@@ -125,21 +125,7 @@ int main(int argc, char **argv)
     graph.addEdge(0, 2);
     graph.addEdge(0, 3);
     graph.addEdge(1, 4);
-    graph.addEdge(1, 5);
-    graph.addEdge(2, 5);
-    graph.addEdge(3, 6);
-    graph.addEdge(4, 7);
-    graph.addEdge(5, 7);
-    graph.addEdge(5, 8);
-    graph.addEdge(6, 9);
-    graph.addEdge(7, 10);
-    graph.addEdge(8, 10);
-    graph.addEdge(9, 10);
-
-    auto edge = graph.isEdge(0, 1);
-    auto edge2 = graph.isEdge(0, 1000);
-
-     */
+    */
 
     bridges.setDataStructure(&graph);
 
