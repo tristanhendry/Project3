@@ -1,9 +1,0 @@
-<<<<<<< HEAD
-D:/School/COP3530/Project-3/cmake-build-debug/CMakeFiles/Project3.dir
-D:/School/COP3530/Project-3/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/School/COP3530/Project-3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-=======
-C:/Users/porta/project3/cmake-build-debug/CMakeFiles/Project3.dir
-C:/Users/porta/project3/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/porta/project3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
->>>>>>> 16e4574d9f4f4c867f57bb2665207949dcd143df

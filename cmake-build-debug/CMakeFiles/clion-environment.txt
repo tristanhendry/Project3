@@ -1,8 +1,0 @@
-ToolSet: w64 11.0 (local)@C:\Users\porta\AppData\Local\Programs\CLion\bin\mingw
-Options: 
-
-<<<<<<< HEAD
-Options:-DCMAKE_MAKE_PROGRAM=C:/Users/porta/AppData/Local/Programs/CLion/bin/ninja/win/x64/ninja.exe
-=======
-Options:
->>>>>>> 16e4574d9f4f4c867f57bb2665207949dcd143df

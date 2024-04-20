@@ -1,14 +1,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Bridges.h"
-#include "DataSource.h"
-#include "BSTElement.h"
+//#include "Bridges.h"
+#include "libraries/bridges/include/DataSource.h"
+#include "libraries/bridges/include/BSTElement.h"
 #include <queue>
 #include <unordered_map>
 #include <random>
-#include "GraphAdjList.h"
-#include <SLelement.h>
+//#include "GraphAdjList.h"
+#include "libraries/bridges/include/GraphAdjList.h"
+#include "libraries/bridges/include/Bridges.h"
+#include "libraries/bridges/include/SLelement.h"
 #include <math.h>
 using namespace std;
 using namespace bridges;
