@@ -10,6 +10,7 @@
 #include "GraphAdjList.h"
 #include <SLelement.h>
 #include <math.h>
+#include <chrono>
 using namespace std;
 using namespace bridges;
 
@@ -22,55 +23,64 @@ using namespace bridges;
           found under Profile on the top left
 */
 
+void bfs(GraphAdjList<int>& graph, int nodeAmt, int nodeFrom, int nodeTo);
 
 int main(int argc, char **argv)
 {
 
-    // Step 3: Test if the following print statement is being run
-    cout << "Bridges: Graph\n";
+    cout << "Welcome to Graph Traversal!\n";
 
-    Bridges bridges (1, "JHooth", "221647721744");
+    Bridges bridges (1, "ProjectThree", "1680912648782");
 
-    // set a title
-    bridges.setTitle("A Simple Adjacency list based Graph Example.");
+    //set a title
+    bridges.setTitle("Graph Traversal Types.");
 
-    // set  description
-    bridges.setDescription("Demonstrate how to create a graph with a few nodes and display it");
+    //set description
+    bridges.setDescription("This is a visualization of the different types of graph searches and their effectiveness");
 
-    // create a graph with key values of type string. See the
-    // the documentation for GraphAdjList for its full capabilities
+    //create a graph with key values of type int
     GraphAdjList<int> graph;
 
+    //Defines amount of nodes to be generated
     int nodeAmt;
     std::cout << "Enter the number of nodes to be generated from 10 to 100,000" << std::endl;
+    //Makes sure that a number is being entered.
     while(true)
     {
         try{
             std::string input0;
             std::cin >> input0;
             nodeAmt = stoi(input0);
-            break;
+            if(10 <= nodeAmt && nodeAmt <= 100000)
+            {
+                break;
+            }
+            else
+            {
+                std::cout << "Enter a value within the range!" << std::endl;
+            }
         }catch(...)
         {
             std::cout << "Enter a valid number:" << std::endl;
         }
     }
-
-
+    //Sets amount of edges to double the vertex count
     int edgeAmt = nodeAmt * 2;
 
+    //adds a vertex to the graph
     for(int i = 0; i < nodeAmt; i++)
     {
         graph.addVertex(i);
     }
 
+    //Keeps track of the amount of edges created
     int edgeCounter = 0;
 
     // Initialize random number generator
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    // Define the range [0, nodeAmt]
+    // Define the range [0, nodeAmt - 1]
     std::uniform_int_distribution<> makeRand(0, nodeAmt - 1);
 
 
@@ -87,7 +97,7 @@ int main(int argc, char **argv)
      */
 
     std::cout << "Generating Graph" << std::endl;
-
+    //Redirects the out stream to catch the isEdge function cout while graph is being created
     std::ostringstream oss;
     std::streambuf* p_cout_streambuf = std::cout.rdbuf();
     std::cout.rdbuf(oss.rdbuf());
@@ -101,6 +111,7 @@ int main(int argc, char **argv)
         {
             to = makeRand(gen);
         }
+        //if edge doesn't exist, creates it
         if(!graph.isEdge(from, to))
         {
 
@@ -108,43 +119,16 @@ int main(int argc, char **argv)
             edgeCounter++;
         }
     }
-
+    //restores the stream
     std::cout.rdbuf(p_cout_streambuf);
 
-
-    //bool test = graph.isEdge(0, 1);
-    std::cout << edgeCounter << std::endl;
-
-    /*
-    for(int i = 0; i < 11; i++)
-    {
-        graph.addVertex(i);
-    }
-
-    graph.addEdge(0, 1);
-    graph.addEdge(0, 2);
-    graph.addEdge(0, 3);
-    graph.addEdge(1, 4);
-    */
-
+    //sets the data structure as graph
     bridges.setDataStructure(&graph);
 
-
-    //bfs method!
-
-
-    std::queue<int> nodeChecker;
-
-    std::unordered_map<int, bool> visited;
-    //makes all distances from nodeFrom infinity to begin with
-    std::vector<int> distance(nodeAmt, 1e9);
-    //stores the parent node of each node
-    std::vector<int> parentTracker(nodeAmt, -1);
-
+    //Asks user for the IDs of the from and to nodes
 
     int nodeFrom;
-    std::cout << "Enter the node number From:" << std::endl;
-    //std::cin >> nodeFrom;
+    std::cout << "Enter a node number " << 0 << " to " << (nodeAmt - 1) << " to search from:" << std::endl;
     while(true)
     {
         try{
@@ -159,8 +143,7 @@ int main(int argc, char **argv)
     }
 
     int nodeTo;
-    std::cout << "Enter the node number To:" << std::endl;
-    //std::cin >> nodeTo;
+    std::cout << "Enter a node number " << 0 << " to " << (nodeAmt - 1) << " to search to:" << std::endl;
     while(true)
     {
         try{
@@ -174,12 +157,65 @@ int main(int argc, char **argv)
         }
     }
 
+    //asks user which method they want to use
+
+    std::cout << "Enter a traversal method: \n1. Breadth First Search\n2. Depth First Search\n"
+                 "3. Dijkstra's Algorithm" << std::endl;
+
+    int selection;
+    while(true)
+    {
+        try{
+            std::string choice;
+            std::cin >> choice;
+            selection = stoi(choice);
+            if(selection == 1 || selection == 2 || selection == 3)
+            {
+                break;
+            }
+            else
+            {
+                std::cout << "Enter a valid choice:" << std::endl;
+            }
+        }catch(...)
+        {
+            std::cout << "Enter a valid traversal 1 through 3:" << std::endl;
+        }
+
+    }
+
+    if(selection == 1)
+    {
+        bfs(graph, nodeAmt, nodeFrom, nodeTo);
+    }
+    //bfs(graph, nodeAmt, nodeFrom, nodeTo);
+
+
+    bridges.visualize();
+
+
+    return 0;
+}
+
+void bfs(GraphAdjList<int>& graph, int nodeAmt, int nodeFrom, int nodeTo)
+{
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+
+    std::queue<int> nodeChecker;
+
+    std::unordered_map<int, bool> visited;
+    //makes all distances from nodeFrom infinity to begin with
+    std::vector<int> distance(nodeAmt, 1e9);
+    //stores the parent node of each node
+    std::vector<int> parentTracker(nodeAmt, -1);
+
+
     visited[nodeFrom] = true;
     distance[nodeFrom] = 0;
     nodeChecker.push(nodeFrom);
 
 
-
+    //while queue isn't empty
     while(!nodeChecker.empty())
     {
 
@@ -210,7 +246,7 @@ int main(int argc, char **argv)
     }
 
     //checks if there is a path
-
+    //if distance is 1e9, means that it was never visited
     if(distance[nodeTo] == 1e9)
     {
         std::cout << "No path found" << std::endl;
@@ -236,12 +272,12 @@ int main(int argc, char **argv)
         std::cout << path[0] << std::endl;
     }
 
+    //Prints out the time it took
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Time took for Breadth First Search = " << std::chrono::duration_cast<std::chrono::microseconds>
+            (end - start).count() << " microseconds" << std::endl;
+
     graph.getVertex(nodeFrom)->setColor("green");
     graph.getVertex(nodeTo)->setColor("green");
 
-
-    bridges.visualize();
-
-
-    return 0;
 }
