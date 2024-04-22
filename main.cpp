@@ -25,6 +25,8 @@ using namespace bridges;
 
 void bfs(GraphAdjList<int>& graph, int nodeAmt, int nodeFrom, int nodeTo);
 
+void dijkstra(GraphAdjList<int>& graph, int nodeAmt, int nodeFrom, int nodeTo);
+
 int main(int argc, char **argv)
 {
 
@@ -187,8 +189,10 @@ int main(int argc, char **argv)
     if(selection == 1)
     {
         bfs(graph, nodeAmt, nodeFrom, nodeTo);
+    }else if(selection == 3){
+        dijkstra(graph, nodeAmt, nodeFrom, nodeTo);
     }
-    //bfs(graph, nodeAmt, nodeFrom, nodeTo);
+
 
 
     bridges.visualize();
@@ -280,4 +284,82 @@ void bfs(GraphAdjList<int>& graph, int nodeAmt, int nodeFrom, int nodeTo)
     graph.getVertex(nodeFrom)->setColor("green");
     graph.getVertex(nodeTo)->setColor("green");
 
+}
+
+void dijkstra(GraphAdjList<int>& graph, int nodeAmt, int nodeFrom, int nodeTo) {
+
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+
+    //makes all distances from nodeFrom infinity to begin with
+    std::vector<int> distance(nodeAmt, 1e9);
+    //stores the parent node of each node
+    std::vector<int> parentTracker(nodeAmt, -1);
+
+    distance[nodeFrom] = 0.0;
+
+    // Priority queue to process nodes in order of increasing distance
+    std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>, std::greater<>> pq;
+    pq.push({0.0, nodeFrom});
+
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        double distU = pq.top().first;
+        pq.pop();
+
+        // If the extracted node is the endNode, stop the algorithm
+        if (u == nodeTo)
+            break;
+
+        // Explore neighbors of the current node
+        for (const auto& neighbor : graph.getAdjacencyList(u)) {
+            int v = neighbor.first;
+            double weight = 1.0; // Default edge weight of 1
+            // double weight = neighbor.second;
+
+            // Update distance if a shorter path is found
+            if (distance[u] + weight < distance[v]) {
+                distance[v] = distance[u] + weight;
+                parentTracker[v] = u;
+                pq.push({distance[v], v});
+            }
+        }
+    }
+
+    //checks if there is a path
+    //if distance is 1e9, means that it was never visited
+    if(distance[nodeTo] == 1e9)
+    {
+        std::cout << "No path found" << std::endl;
+    }else
+    {
+        //path method
+        std::cout << "Found node! Distance: " << distance[nodeTo] << std::endl;
+
+        vector<int> path;
+        path.push_back(nodeTo);
+        int currentNode = nodeTo;
+        while (parentTracker[currentNode] != -1) {
+            path.push_back(parentTracker[currentNode]);
+
+            graph.getLinkVisualizer(parentTracker[currentNode], currentNode)->setColor("red");
+
+            currentNode = parentTracker[currentNode];
+            graph.getVertex(currentNode)->setColor("yellow");
+        }
+
+        std::cout << "Path from " << nodeFrom << " to " << nodeTo << " is: ";
+        for (int i = int(path.size() - 1); i > 0; i--) {
+            std::cout << path[i] << " -> ";
+        }
+        std::cout << path[0] << std::endl;
+    }
+
+    //Prints out the time it took
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Time took for Breadth First Search = " << std::chrono::duration_cast<std::chrono::microseconds>
+            (end - start).count() << " microseconds" << std::endl;
+
+    graph.getVertex(nodeFrom)->setColor("green");
+    graph.getVertex(nodeTo)->setColor("green");
 }
